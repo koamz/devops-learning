@@ -1,23 +1,28 @@
 const app = require('./server');
+const http = require('http');
 const assert = require('assert');
 
-try {
-    const mockReq = {};
-    const mockRes = {
-        status: function(code) {
-            this.statusCode = code;
-            return this;
-        },
-        send: function(msg) {
-            this.body = msg;
-            assert.strictEqual(this.statusCode, 200, "Status should be 200");
-            console.log("✅ Unit Test Passed: Server returned status 200!");
-            process.exit(0); 
-        }
-    };
+const server = app.listen(3000, () => {
+    
+    http.get('http://localhost:3000/', (res) => {
+        let data = '';
 
-    app._router.handle({ method: 'GET', url: '/' }, mockRes, () => {});
-} catch (error) {
-    console.error("❌ Unit Test Failed:", error.message);
-    process.exit(1);
-}
+        res.on('data', (chunk) => { data += chunk; });
+
+        res.on('end', () => {
+            try {
+                assert.strictEqual(res.statusCode, 200, "Status should be 200");
+                assert.strictEqual(data, "Welcome to my DevOps App!", "Response body mismatch");
+                
+                console.log("✅ Unit Test Passed: Server works perfectly!");
+                server.close(() => process.exit(0)); 
+            } catch (error) {
+                console.error("❌ Test Assert Failed:", error.message);
+                server.close(() => process.exit(1));
+            }
+        });
+    }).on('error', (err) => {
+        console.error("❌ HTTP Request Error:", err.message);
+        server.close(() => process.exit(1));
+    });
+});
