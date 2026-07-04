@@ -1,4 +1,4 @@
-name: CI-CD-Test-Robot
+name: Nodejs-Real-Test-Pipeline
 
 on:
   push:
@@ -12,12 +12,12 @@ jobs:
     - name: Checkout project code
       uses: actions/checkout@v4
 
-    - name: Run code inspection
-      run: |
-        echo "Starting DevOps Pipeline..."
-        echo "Simulating code tests: PASSED"
+    - name: Setup Node.js Env
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
 
-    - name: Run Docker Simulation
-      run: |
-        echo "Docker engine detected successfully."
-        echo "Simulating Docker Build: Image successfully created!"
+    - name: Install Express Package
+      run: npm install express 
+    - name: Run Real Unit Test
+      run: node test.js 
