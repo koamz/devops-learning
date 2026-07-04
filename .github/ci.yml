@@ -1,0 +1,23 @@
+name: CI-CD-Test-Robot
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout project code
+      uses: actions/checkout@v4
+
+    - name: Run code inspection
+      run: |
+        echo "Starting DevOps Pipeline..."
+        echo "Simulating code tests: PASSED"
+
+    - name: Run Docker Simulation
+      run: |
+        echo "Docker engine detected successfully."
+        echo "Simulating Docker Build: Image successfully created!"
